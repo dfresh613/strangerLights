@@ -6,21 +6,81 @@
     <script src="https://use.fontawesome.com/762c49626c.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<div class="container-fluid">
-    {% if current_message_queue %}
-        <table class = "table table-hover">
+<div class="container">
+    <div class="page-header">
+    <h1 align="center"><b>StrangerLights </b></h1>
+    </div>
+{% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error! </strong> {{message}}
+        </div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Successful</strong> {{message}}
+        </div>
+    {% endif %}
+{% endfor %}
+    <div class="form-group">
+        <div class="col-md-3">
+            </div>
+        <div class="col-md-3">
+            <h3 align="center">Sequences Queue <i class="fa fa-list" aria-hidden="true"></i></i></h3>
+                {% if current_message_queue %}
+         </div>
+        <div class="col-md-2">
+           <!-- Large modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Send Message <i class="fa fa-plus-square" aria-hidden="true"></i>
+</button>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <h3 align="center">Send a message to the upside down</h3>
+<form class="form-horizontal" role="form" action="{% url 'messagereceiver:queue' %}" method="post">
+{% csrf_token %}
+    <div class="form-group">
+        <div class="col-md-12">
+            <textarea placeholder="Enter your message..." class="form-control" name="message" id="message" rows="2"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Who are you?: </label>
+        <div class="col-md-10">
+            <input id="author" name="author" type="text" value="The Demogorgon">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10"></div>
+        <div class="col-md-2" pull-right>
+        <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+    </div>
+</form>
+
+
+
+    </div>
+  </div>
+</div>
+        </div>
+        <div class="col-md-4"></div>
+        </div>
+        <table class="table table-hover">
             <tr>
                 <th>Message text</th>
                 <th>Color</th>
                 <th>Added By</th>
-                <th>Delete</th>
             </tr>
         {% for q in current_message_queue %}
             <tr>
                 <td>{{ q.message.message_text }}</a></td>
                 <td><a href="/color/{{ q.color.id }}/">{{ q.color.color_name }}</a></td>
                 <td>{{ q.message.added_by }}</td>
-                <td><a class="btn btn-danger" href="{% url 'messagereceiver:remove' q.id %}"><i class="fa fa-trash" aria-hidden="true"></i>
+               <!-- <td><a class="btn btn-danger" href="{% url 'messagereceiver:remove' q.id %}"><i class="fa fa-trash" aria-hidden="true"></i>-->
 </a></td>
             </tr>
         {% endfor %}
