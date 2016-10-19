@@ -29,7 +29,6 @@
             </div>
         <div class="col-md-3">
             <h3 align="center">Sequences Queue <i class="fa fa-list" aria-hidden="true"></i></i></h3>
-                {% if current_message_queue %}
          </div>
         <div class="col-md-2">
            <!-- Large modal -->
@@ -69,6 +68,7 @@
         </div>
         <div class="col-md-4"></div>
         </div>
+    {% if current_message_queue %}
         <table class="table table-hover">
             <tr>
                 <th>Message text</th>
