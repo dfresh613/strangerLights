@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import Queue, Message, Color
 from django.urls import reverse
 from django.contrib.messages import error, success
 from django.template import loader
+import json
 
 
 def index(request):
@@ -42,7 +43,25 @@ def queue(request):
 
 
 def q_next(request):
-    return HttpResponse("You're getting the next on the queue which is id")
+    try:
+        req_sucess=True
+        next=Queue.objects.order_by('id')[0]
+    except:
+        next=None
+        req_sucess=False
+
+    response_data = {
+        'success': req_sucess,
+    }
+
+    if req_sucess:
+        response_data.update({'message':  next.message.message_text})
+        response_data.update({'r': next.color.r})
+        response_data.update({'g': next.color.g})
+        response_data.update({'b': next.color.b})
+        response_data.update({'id': next.id})
+
+    return JsonResponse(response_data)
 
 
 def queue_message(request, message_id):
@@ -54,4 +73,10 @@ def message_details(request, message_id):
 
 
 def remove(request, queue_pos):
-    return HttpResponse("Removed #{} from queue".format(queue_pos))
+    response_data={}
+    try:
+        Queue.objects.filter(id=queue_pos).delete()
+        response_data.update({'success': True})
+    except:
+        response_data.update({'success': True})
+    return JsonResponse(response_data)
