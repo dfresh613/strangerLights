@@ -6,7 +6,24 @@ background: url(images/strangerthings.jpg) no-repeat center center fixed;
 background-size: cover;
 }
 
-
-table tr td, table tr th{
-    background-color: rgba(210,130,240, 0.5) !important;
+p {
+    text-indent: 30px;
+    color: white;
+    font-style: italic;
 }
+
+h3 {
+    word-wrap: break-word;
+}
+
+.panel-transparent {
+        background: none;
+    }
+
+    .panel-transparent .panel-heading{
+        background: rgba(122, 130, 136, 0.2)!important;
+    }
+
+    .panel-transparent .panel-body{
+        background: rgba(46, 51, 56, .6)!important;
+    }

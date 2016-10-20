@@ -6,9 +6,10 @@
     <script src="https://use.fontawesome.com/762c49626c.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+<body>
 <div class="container">
     <div class="page-header">
-    <h1 align="center"><b>StrangerLights </b></h1>
+    <h1 style="color:white;"align="center"><b>StrangerLights </b></h1>
     </div>
 {% for message in messages %}
     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
@@ -24,15 +25,17 @@
         </div>
     {% endif %}
 {% endfor %}
-    <div class="form-group">
-        <div class="col-md-3">
-            </div>
-        <div class="col-md-3">
-            <h3 align="center">Sequences Queue <i class="fa fa-list" aria-hidden="true"></i></i></h3>
+    <div class="panel panel-transparent">
+        <div class="panel-body">
+            <h2><b>
+                Incoming Messages
+                </b>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"> <i class="fa fa-plus-square" aria-hidden="true"> Send a message</i>
+                </button>
+                </i></h2>
          </div>
-        <div class="col-md-2">
+
            <!-- Large modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Send Message <i class="fa fa-plus-square" aria-hidden="true"></i>
 </button>
 
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -53,36 +56,38 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="col-md-10"></div>
-        <div class="col-md-2" pull-right>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="col-md-12" pull-right>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
     </div>
 </form>
-
-
-
     </div>
   </div>
 </div>
         </div>
-        <div class="col-md-4"></div>
+        </div>
         </div>
     {% if current_message_queue %}
-        <table class="table table-hover">
-            <tr>
-                <th>Message text</th>
-                <th>Added By</th>
-            </tr>
+<div class="form-group" role="form">
         {% for q in current_message_queue %}
-            <tr>
-                <td>{{ q.message.message_text }}</a></td>
-                <td>{{ q.message.added_by }}</td>
-               <!-- <td><a class="btn btn-danger" href="{% url 'messagereceiver:remove' q.id %}"><i class="fa fa-trash" aria-hidden="true"></i>-->
-</a></td>
-            </tr>
+        <div class="form-group" >
+
+            <div class="col-sm-12 col-xs-12" style="box-shadow: 0 0 10px black;">
+              <h3>{{ q.message.message_text }}</h3>
+
+            <div class="form-group">
+            <div class="col-sm-12 col-xs-12">
+                <p>{{ q.message.added_by }}</p>
+            </div>
+        </div>
+                </div>
+
+            <!--<div class="col-sm-5" col-xs-5>
+                <p>Added By: {{ q.message.added_by }}</p>
+            </div>-->
+</div>
         {% endfor %}
-        </table>
     {% else %}
         <p>Nothing queued!</p>
     {% endif %}
@@ -97,4 +102,5 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </div>
+</body>
 </html>
