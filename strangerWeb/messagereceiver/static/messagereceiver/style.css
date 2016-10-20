@@ -1,0 +1,12 @@
+body {
+background: url(images/strangerthings.jpg) no-repeat center center fixed;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+}
+
+
+table tr td, table tr th{
+    background-color: rgba(210,130,240, 0.5) !important;
+}
