@@ -8,7 +8,7 @@
 const byte HASH_SIZE = 28;
 HashType<char*,int> hashRawArray[HASH_SIZE]; 
 //handles the storage [search,retrieve,insert]
-HashMap<char*,int> hashMap = HashMap<char*,int>( hashRawArray , HASH_SIZE ); 
+HashMap<char*,int> charToLed = HashMap<char*,int>( hashRawArray , HASH_SIZE ); 
 
 #define NUM_LEDS 100 //change this for the number of LEDs in the strip
 #define COLOR_ORDER RGB
@@ -25,10 +25,36 @@ int t = 0;
 void setup(){
     FastLED.addLeds<WS2811, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); //setting up the FastLED
     // Add Led values for each letter into hashmap
-    hashMap[0]('a',0);
+    charToLed[0]('a',0);
+    charToLed[1]('b',4);
+    charToLed[3]('c',8);
+    charToLed[4]('d',12);
+    charToLed[5]('e',16);
+    charToLed[6]('f',20);
+    charToLed[7]('g',24);
+    charToLed[8]('h',27);
+    charToLed[9]('i',30);
+    charToLed[10]('j',63);
+    charToLed[11]('k',60);
+    charToLed[12]('l',57);
+    charToLed[13]('m',54);
+    charToLed[14]('n',50);
+    charToLed[15]('o',46);
+    charToLed[16]('p',43);
+    charToLed[17]('q',40);
+    charToLed[18]('r',37);
+    charToLed[19]('s',71);
+    charToLed[20]('t',74);
+    charToLed[21]('u',77);
+    charToLed[22]('v',80);
+    charToLed[23]('w',84);
+    charToLed[24]('x',87);
+    charToLed[25]('y',90);
+    charToLed[26]('z',93);
     
-    randomSeed(analogRead(0)); //seeding my random numbers to make it more random.  If you just use the random function it will repeat the same pattern every time it is loaded.
-    }
+    
+    randomSeed(analogRead(0));
+}
 
 void loop(){
 
@@ -68,38 +94,59 @@ switch(z){
 //z = random (0, 9); //random includes the first number and maxes out at one less than the second number
   
   while (true){
-    char message[ ] = "aaaaa";
-    displayMessage(message);
-    //lightRun();
+    displayMessage("dead");
+    lightRun();
+    displayMessage("zebra");
+    lightRun();
   }
 }
 
 void displayMessage(char message[]){
   int prev_led = -1;
-  for(int i =0; i< sizeof(message); i+=1){
+  for(int i =0; i< strlen(message); i+=1){
     FastLED.clear();
     
     if(prev_led >= 0){
       leds[prev_led] = CRGB(0,0,0);
       leds[prev_led+1] = CRGB(0,0,0);
       FastLED.show();
-      delay(3000);
     }
-  
+    int r=randomColorCode();
+    int g=randomColorCode();
+    int b=randomColorCode();
     
     char letter = message[i];
-    int ledNum = hashMap.getValueOf(letter);
-    leds[ledNum] = CRGB (0,255,0);
-    leds[ledNum+1] = CRGB(0,255,0);
+    int ledNum = charToLed.getValueOf(letter);
+    leds[ledNum] = CRGB (r,g,b);
+    leds[ledNum+1] = CRGB(r,g,b);
     prev_led=ledNum;
     
     FastLED.show();
-    delay(5000);
+    delay(2000);
   }
   
 }
- //All of my subroutines are below.  I've been told that this is very poor coding, but I'm new to all of this.  Feel free to replace my subroutines with ones of your own.  Many people have suggested using strings instead of 
- //hard writing each of the LED conditions like I have below.
+
+void lightRun() {
+  for (int i =0 ;i< NUM_LEDS; i+=1){
+      leds[i] = CRGB(153,51,255);
+      FastLED.show();
+      delay(20);
+  }
+
+  for(int i=NUM_LEDS-1; i>=0; i-=1){
+    leds[i] = CRGB(0,255,0);
+    FastLED.show();
+    delay(20);
+  }
+}
+
+int randomColorCode(){
+  int rColor = random(255);
+  return rColor;
+}
+
+//Cool functions created by bxl4662
 void CHRISTMAS() {
   FastLED.clear();
     leds[0] = CRGB (0,255,255); //aqua
@@ -229,20 +276,6 @@ void glowup() {
  
 }
 
-void lightRun() {
-  for (int i =0 ;i< NUM_LEDS; i+=1){
-      leds[i] = CRGB(153,51,255);
-      FastLED.show();
-      delay(20);
-  }
-
-  for(int i=NUM_LEDS-1; i>=0; i-=1){
-    leds[i] = CRGB(0,255,0);
-    FastLED.show();
-    delay(20);
-  }
-}
-
 void glowdown() {
   //Same thing as glowup, except in reverse
   for (int i = 255; i > 60; i = i - y){
@@ -260,240 +293,6 @@ void glowdown() {
     }      
 }
 
-void IMHERE() {
-  //These are all where strings would have been better.  I'm going to work on a rev2 so we'll see what happens.  Suggestions are appreciated
-      FastLED.clear();
-  leds[84] = CRGB (255,255,255);
-  leds[85] = CRGB (255,255,255);
-  leds[86] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[84] = CRGB (0,0,0);
-  leds[85] = CRGB (0,0,0);
-  leds[86] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500);
-  leds[95] = CRGB (255,255,255);
-  leds[96] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[95] = CRGB (0,0,0);
-  leds[96] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500); 
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[82] = CRGB (0,0,0);
-  leds[83] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500); 
-  leds[73] = CRGB (255,255,255);
-  leds[74] = CRGB (255,255,255);
-  leds[75] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[73] = CRGB (0,0,0);
-  leds[74] = CRGB (0,0,0);
-  leds[75] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500); 
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[33] = CRGB (0,0,0);
-  leds[34] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500); 
-  leds[73] = CRGB (255,255,255);
-  leds[74] = CRGB (255,255,255);
-  leds[75] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[73] = CRGB (0,0,0);
-  leds[74] = CRGB (0,0,0);
-  leds[75] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500); 
-  leds[84] = CRGB (255,255,255);
-  leds[85] = CRGB (255,255,255);
-  leds[86] = CRGB (255,255,255);
-  leds[95] = CRGB (255,255,255);
-  leds[96] = CRGB (255,255,255);
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-  leds[73] = CRGB (255,255,255);
-  leds[74] = CRGB (255,255,255);  
-  leds[75] = CRGB (255,255,255);
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();
-        delay(500);
-  FastLED.clear();
-        delay(500);
-  leds[84] = CRGB (255,255,255);
-  leds[85] = CRGB (255,255,255);
-  leds[86] = CRGB (255,255,255);
-  leds[95] = CRGB (255,255,255);
-  leds[96] = CRGB (255,255,255);
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-  leds[73] = CRGB (255,255,255);
-  leds[74] = CRGB (255,255,255);  
-  leds[75] = CRGB (255,255,255);
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();
-        delay(200);
-FastLED.clear();
-        delay(300);
-  leds[84] = CRGB (255,255,255);
-  leds[85] = CRGB (255,255,255);
-  leds[86] = CRGB (255,255,255);
-  leds[95] = CRGB (255,255,255);
-  leds[96] = CRGB (255,255,255);
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-  leds[73] = CRGB (255,255,255);
-  leds[74] = CRGB (255,255,255);  
-  leds[75] = CRGB (255,255,255);
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();        
-  delay(10000); 
-    FastLED.clear();  
-}
-
-void RUN() {
-      FastLED.clear();
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();
-      delay(500); 
-  leds[33] = CRGB (0,0,0);
-  leds[34] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500); 
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();
-      delay(300); 
-  leds[33] = CRGB (0,0,0);
-  leds[34] = CRGB (0,0,0);
-        FastLED.show();
-      delay(600); 
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();
-      delay(400); 
-  leds[33] = CRGB (0,0,0);
-  leds[34] = CRGB (0,0,0);
-        FastLED.show();
-      delay(500); 
-  leds[33] = CRGB (255,255,255);
-  leds[34] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[23] = CRGB (255,255,255);
-  leds[24] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[45] = CRGB (255,255,255);
-  leds[46] = CRGB (255,255,255);
-        FastLED.show();
-      delay(10000); 
-leds[34] = CRGB (0,0,0);
- FastLED.show();
-      delay(300); 
-leds[45] = CRGB (0,0,0);
-FastLED.show();
-     delay(500); 
-leds[23] = CRGB (0,0,0);
-FastLED.show();
-     delay(1000); 
-leds[46] = CRGB (0,0,0);
-FastLED.show();
-     delay(2000); 
-leds[33] = CRGB (0,0,0);
-FastLED.show();
-     delay(300); 
-leds[24] = CRGB (0,0,0);
-FastLED.show();
-     delay(5000); 
-    FastLED.clear();  
-}
-
-void HELP() {
-      FastLED.clear();
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-        FastLED.show();
-      delay(500); 
-  leds[82] = CRGB (0,0,0);
-  leds[83] = CRGB (0,0,0);
-        FastLED.show();
-      delay(700); 
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-        FastLED.show();
-      delay(400); 
-  leds[82] = CRGB (0,0,0);
-  leds[83] = CRGB (0,0,0);
-        FastLED.show();
-      delay(400); 
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-        FastLED.show();
-      delay(250); 
-  leds[82] = CRGB (0,0,0);
-  leds[83] = CRGB (0,0,0);
-        FastLED.show();
-      delay(250); 
-  leds[82] = CRGB (255,255,255);
-  leds[83] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[73] = CRGB (255,255,255);
-  leds[74] = CRGB (255,255,255);
-  leds[75] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[93] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[38] = CRGB (255,255,255);
-  leds[39] = CRGB (255,255,255);
-        FastLED.show();
-      delay(2000); 
-  leds[38] = CRGB (0, 0, 0);
-  leds[39] = CRGB (0, 0, 0);
-        FastLED.show();
-      delay(1000); 
-  leds[38] = CRGB (255,255,255);
-  leds[39] = CRGB (255,255,255);
-        FastLED.show();
-      delay(500); 
-  leds[38] = CRGB (0, 0, 0);
-  leds[39] = CRGB (0, 0, 0);
-        FastLED.show();
-      delay(200); 
-  leds[38] = CRGB (255,255,255);
-  leds[39] = CRGB (255,255,255);
-        FastLED.show();
-      delay(200); 
-  leds[38] = CRGB (0, 0, 0);
-  leds[39] = CRGB (0, 0, 0);
-        FastLED.show();
-      delay(200); 
-  leds[38] = CRGB (255,255,255);
-  leds[39] = CRGB (255,255,255);
-        FastLED.show();
-      delay(10000); 
-    FastLED.clear();  
-    delay(5000); 
-}
 
 void LOWREDUP(){
      for( int i = 20; i < 150; i = i + y ) {
