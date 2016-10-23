@@ -1,6 +1,15 @@
-
 #include <FastLED.h>
+#include <HashMap.h>
+
 #define DATA_PIN 6  //this is the data pin connected to the LED strip.  If using WS2801 you also need a clock pin
+/**  
+ *   Array location for each letter. We can use this to dynamically create messages based on strings.
+ */
+const byte HASH_SIZE = 28;
+HashType<char*,int> hashRawArray[HASH_SIZE]; 
+//handles the storage [search,retrieve,insert]
+HashMap<char*,int> hashMap = HashMap<char*,int>( hashRawArray , HASH_SIZE ); 
+
 #define NUM_LEDS 100 //change this for the number of LEDs in the strip
 #define COLOR_ORDER RGB
 
@@ -14,7 +23,10 @@ int a = 0;
 int t = 0;
 
 void setup(){
-  FastLED.addLeds<WS2811, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); //setting up the FastLED
+    FastLED.addLeds<WS2811, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); //setting up the FastLED
+    // Add Led values for each letter into hashmap
+    hashMap[0]('a',0);
+    
     randomSeed(analogRead(0)); //seeding my random numbers to make it more random.  If you just use the random function it will repeat the same pattern every time it is loaded.
     }
 
@@ -22,7 +34,7 @@ void loop(){
 
   //The switch case loop let me use a random number generator to switch between subroutines.  The default case is run if the condition isn't met in any other case.  Since I wanted the standard christmas lights more often
   //than everything else, I have 3 conditions that will give me the christmas lights (z=6, z=7, z=8) while there is only one condition for all other subroutines.
-
+/*
 switch(z){
  case 0:
   IMHERE();
@@ -52,8 +64,39 @@ switch(z){
  default:
   CHRISTMAS();
   break;
+}*/
+//z = random (0, 9); //random includes the first number and maxes out at one less than the second number
+  
+  while (true){
+    char message[ ] = "aaaaa";
+    displayMessage(message);
+    //lightRun();
+  }
 }
-z = random (0, 9); //random includes the first number and maxes out at one less than the second number
+
+void displayMessage(char message[]){
+  int prev_led = -1;
+  for(int i =0; i< sizeof(message); i+=1){
+    FastLED.clear();
+    
+    if(prev_led >= 0){
+      leds[prev_led] = CRGB(0,0,0);
+      leds[prev_led+1] = CRGB(0,0,0);
+      FastLED.show();
+      delay(3000);
+    }
+  
+    
+    char letter = message[i];
+    int ledNum = hashMap.getValueOf(letter);
+    leds[ledNum] = CRGB (0,255,0);
+    leds[ledNum+1] = CRGB(0,255,0);
+    prev_led=ledNum;
+    
+    FastLED.show();
+    delay(5000);
+  }
+  
 }
  //All of my subroutines are below.  I've been told that this is very poor coding, but I'm new to all of this.  Feel free to replace my subroutines with ones of your own.  Many people have suggested using strings instead of 
  //hard writing each of the LED conditions like I have below.
@@ -183,6 +226,21 @@ void glowup() {
       FastLED.show();
       delay(50); 
     }
+ 
+}
+
+void lightRun() {
+  for (int i =0 ;i< NUM_LEDS; i+=1){
+      leds[i] = CRGB(153,51,255);
+      FastLED.show();
+      delay(20);
+  }
+
+  for(int i=NUM_LEDS-1; i>=0; i-=1){
+    leds[i] = CRGB(0,255,0);
+    FastLED.show();
+    delay(20);
+  }
 }
 
 void glowdown() {
