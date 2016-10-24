@@ -18,6 +18,6 @@ while True:
 
     (message, q_pos) = api_comm.get_next_message()
     message = ''.join(c for c in message if message.isalpha())
-    message = message.tolower()
+    message = message.lower()
     print "sending message {}".format(message)
     arduino_comm.push_message(message)
