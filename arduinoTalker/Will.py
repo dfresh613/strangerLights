@@ -20,4 +20,5 @@ while True:
     message = ''.join(c for c in message if message.isalpha())
     message = message.lower()
     print "sending message {}".format(message)
-    arduino_comm.push_message(message)
+    for letter in message:
+        arduino_comm.push_message(letter)
