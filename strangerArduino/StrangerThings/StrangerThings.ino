@@ -24,6 +24,7 @@ int t = 0;
 
 void setup(){
     FastLED.addLeds<WS2811, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); //setting up the FastLED
+    Serial.begin(9600);
     // Add Led values for each letter into hashmap
     charToLed[0]('a',0);
     charToLed[1]('b',4);
@@ -91,12 +92,16 @@ switch(z){
   CHRISTMAS();
   break;
 }*/
-//z = random (0, 9); //random includes the first number and maxes out at one less than the second number
   
   while (true){
-    displayMessage("dead");
+    if(Serial.available()){
+      Serial.println("ready"); 
+      char[] msg = Serial.read();
+      displayMessage(msg);
+    }
+    //isplayMessage("dead");
     lightRun();
-    displayMessage("zebra");
+    //displayMessage("zebra");
     lightRun();
   }
 }
