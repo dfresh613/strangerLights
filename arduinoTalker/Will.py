@@ -21,4 +21,4 @@ while True:
     message = message.lower()
     print "sending message {}".format(message)
     for letter in message:
-        arduino_comm.push_message(letter)
+        arduino_comm.push_message(str(letter)
