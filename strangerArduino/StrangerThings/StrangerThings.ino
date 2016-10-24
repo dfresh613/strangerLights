@@ -60,49 +60,19 @@ void setup(){
 void loop(){
 
   //The switch case loop let me use a random number generator to switch between subroutines.  The default case is run if the condition isn't met in any other case.  Since I wanted the standard christmas lights more often
-  //than everything else, I have 3 conditions that will give me the christmas lights (z=6, z=7, z=8) while there is only one condition for all other subroutines.
-/*
-switch(z){
- case 0:
-  IMHERE();
-  break;
- case 1:
-  RUN();
-  break;
- case 2:
-  HELP();
-  break;
- case 3:
- //I broke case 3 and case 5 into two routines, one to go up and one to go down.  When I had it as a for loop that went up and down the program got stuck in a never ending loop and didn't leave the subroutine
-  LOWREDUP();
-  LOWREDDOWN();
-  LOWREDUP();
-  LOWREDDOWN();
-  break;
- case 4:
-  BLACKOUT();
-  break;
-  case 5:
-  glowup();
-  glowdown();
-  glowup();
-  glowdown();
-  break;
- default:
-  CHRISTMAS();
-  break;
-}*/
-  
+  int bytes;
   while (true){
-    if(Serial.available()){
-      Serial.println("ready"); 
-      char[] msg = Serial.read();
+    char msg[255];
+      Serial.println("ready");
+      if(Serial.available()){
+      bytes=Serial.available();
+      for (byte i=0;i<bytes;i++){
+        msg[i] = Serial.read();
+      }
       displayMessage(msg);
     }
-    //isplayMessage("dead");
     lightRun();
     //displayMessage("zebra");
-    lightRun();
   }
 }
 

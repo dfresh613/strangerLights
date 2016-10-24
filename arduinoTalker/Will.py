@@ -8,7 +8,7 @@ arduino_comm= ArduinoInterface()
 def generateRandom():
     pass
 
-q_pos =- 1
+q_pos = -1
 # Always loop listening for message from arduino
 while True:        
     incoming_msg=arduino_comm.ser.readline()
