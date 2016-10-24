@@ -59,7 +59,6 @@ void setup(){
 
 void loop(){
 
-  //The switch case loop let me use a random number generator to switch between subroutines.  The default case is run if the condition isn't met in any other case.  Since I wanted the standard christmas lights more often
   int bytes;
   while (true){
     char msg[255];
