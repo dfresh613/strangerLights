@@ -11,7 +11,7 @@ def generateRandom():
 q_pos =- 1
 # Always loop listening for message from arduino
 while True:        
-    incoming_msg=arduino_comm.ser.readLine()
+    incoming_msg=arduino_comm.ser.readline()
     print "Received arduino message {} ".format(incoming_msg);
     if q_pos != -1:
         api_comm.remove_message(q_pos)
