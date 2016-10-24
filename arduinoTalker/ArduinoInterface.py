@@ -9,4 +9,4 @@ class ArduinoInterface:
         self.ser.write(message)
 
     def read_message(self):
-        return self.ser.readLine();
+        return self.ser.readline();
