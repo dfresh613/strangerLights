@@ -85,27 +85,24 @@ void notifyPi(){
   Serial.println("ready");
 }
 void doRandom(){
-  int rNum=random(4);
+  int rNum=random(3);
   switch(rNum){
     case 0:
-      LOWREDUP();
-      break;
-    case 1:
       LOWREDDOWN();
       break;
-    case 2:
+    case 1:
       lightRun();
       break;
-    case 3:
+    case 2:
       CHRISTMAS();
       break;
-    case 4:
+    case 3:
       displayMessage("die");
       break;
-    case 5:
+    case 4:
       displayMessage("helpme");
       break;
-    case 6:
+    case 5:
       displayMessage("itscoming");
       break;
     default:
