@@ -6,7 +6,7 @@ class ArduinoInterface:
         self.ser=serial.Serial('/dev/ttyACM0', 9600)
 
     def push_message(self, message):
-        self.ser.write(message)
+        self.ser.write(message.encode())
 
     def read_message(self):
         return self.ser.readline();

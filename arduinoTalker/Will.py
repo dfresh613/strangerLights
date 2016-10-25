@@ -16,9 +16,12 @@ while True:
     if q_pos != -1:
         api_comm.remove_message(q_pos)
 
-    (message, q_pos) = api_comm.get_next_message()
-    message = ''.join(c for c in message if message.isalpha())
-    message = message.lower()
-    print "sending message {}".format(message)
-    for letter in message:
-        arduino_comm.push_message(str(letter))
+    (unparsed, q_pos) = api_comm.get_next_message()
+    outgoing_message = ""
+    for c in unparsed:
+        if c.isalpha():
+            outgoing_message+=c
+    outgoing_message = outgoing_message.lower()
+    print "sending message {}".format(outgoing_message)
+    if len(outgoing_message) > 0:
+        arduino_comm.push_message(outgoing_message)
