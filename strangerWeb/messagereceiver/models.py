@@ -23,7 +23,7 @@ class Message(models.Model):
 
 class Queue(models.Model):
     message = models.ForeignKey(Message)
-    color = models.ForeignKey(Color)
+    color = models.ForeignKey(Color, null=True)
 
     def __str__(self):
         return 'Message: '+self.message.__str__()+'\n Color: '+self.color.__str__()

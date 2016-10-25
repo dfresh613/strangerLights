@@ -4,7 +4,6 @@ from .models import Queue, Message, Color
 from django.urls import reverse
 from django.contrib.messages import error, success
 from django.template import loader
-import json
 
 
 def index(request):
@@ -20,7 +19,6 @@ def index(request):
 
 
 def queue(request):
-    # TODO: add check for POST to handle new message
     if request.method == 'POST':
         message = request.POST['message']
         added_by = request.POST['author']
@@ -29,7 +27,7 @@ def queue(request):
             # place holder for now. Colors of message will be randomized for cooler effect
             color_obj = Color.objects.get(id=5)
             msg_obj.save()
-            new_item = Queue(message=msg_obj, color=color_obj)
+            new_item = Queue(message=msg_obj, color=None)
             new_item.save()
         except Exception as e:
             error(request, e)
@@ -56,9 +54,13 @@ def q_next(request):
 
     if req_sucess:
         response_data.update({'message':  next.message.message_text})
+        """disable until color is supported on front end
+
         response_data.update({'r': next.color.r})
         response_data.update({'g': next.color.g})
         response_data.update({'b': next.color.b})
+
+        """
         response_data.update({'id': next.id})
 
     return JsonResponse(response_data)
