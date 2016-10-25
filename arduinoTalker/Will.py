@@ -19,8 +19,8 @@ while True:
     (unparsed, q_pos) = api_comm.get_next_message()
     outgoing_message = ""
     for c in unparsed:
-        if c.isalpha():
-            outgoing_message+=c
+        if c.isalpha() or c.isspace():
+            outgoing_message += c
     outgoing_message = outgoing_message.lower()
     print "sending message {}".format(outgoing_message)
     if len(outgoing_message) > 0:
