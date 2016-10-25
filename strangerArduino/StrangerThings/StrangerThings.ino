@@ -130,6 +130,13 @@ void displayMessage(String message){
       leds[prev_led+1] = CRGB(0,0,0);
       FastLED.show();
     }
+    
+    letter = message.charAt(i);
+    if (isWhitespace(letter)){
+        delay(2000);
+        continue;
+    }
+
     r=randomColorCode();
     g=randomColorCode();
     b=randomColorCode();
@@ -137,7 +144,6 @@ void displayMessage(String message){
     g2=randomColorCode();
     b2=randomColorCode();
     
-    letter = message.charAt(i);
     ledNum = charToLed.getValueOf(letter);
     leds[ledNum] = CRGB (r,g,b);
     leds[ledNum+1] = CRGB(r2,g2,b2);
