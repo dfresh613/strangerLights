@@ -2,9 +2,7 @@
 #include <HashMap.h>
 
 #define DATA_PIN 6  //this is the data pin connected to the LED strip.  If using WS2801 you also need a clock pin
-/**  
- *   Array location for each letter. We can use this to dynamically create messages based on strings.
- */
+// The number of lettters/characters we want to store in the hashmap
 const byte HASH_SIZE = 28;
 HashType<char*,int> hashRawArray[HASH_SIZE]; 
 //handles the storage [search,retrieve,insert]
@@ -14,18 +12,17 @@ HashMap<char*,int> charToLed = HashMap<char*,int>( hashRawArray , HASH_SIZE );
 #define COLOR_ORDER RGB
 
 CRGB leds[NUM_LEDS]; 
-//I have a few additional integers in here from different tests. 
+boolean running=false;
+
+//bxl4662's variable for LOWEREDUP and LOWEREDDOWN functions
 int y = 1;
-int z = 0;
-int w = 5;
-int i = 20;
-int a = 0;
-int t = 0;
 
 void setup(){
     FastLED.addLeds<WS2811, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); //setting up the FastLED
     Serial.begin(9600);
-    // Add Led values for each letter into hashmap
+    /**  
+    * Array location for each letter. We can use this to dynamically create messages based on strings.
+    */
     charToLed[0]('a',0);
     charToLed[1]('b',4);
     charToLed[3]('c',8);
@@ -58,57 +55,74 @@ void setup(){
 }
 
 void loop(){
-
-  //The switch case loop let me use a random number generator to switch between subroutines.  The default case is run if the condition isn't met in any other case.  Since I wanted the standard christmas lights more often
-  //than everything else, I have 3 conditions that will give me the christmas lights (z=6, z=7, z=8) while there is only one condition for all other subroutines.
-/*
-switch(z){
- case 0:
-  IMHERE();
-  break;
- case 1:
-  RUN();
-  break;
- case 2:
-  HELP();
-  break;
- case 3:
- //I broke case 3 and case 5 into two routines, one to go up and one to go down.  When I had it as a for loop that went up and down the program got stuck in a never ending loop and didn't leave the subroutine
-  LOWREDUP();
-  LOWREDDOWN();
-  LOWREDUP();
-  LOWREDDOWN();
-  break;
- case 4:
-  BLACKOUT();
-  break;
-  case 5:
-  glowup();
-  glowdown();
-  glowup();
-  glowdown();
-  break;
- default:
-  CHRISTMAS();
-  break;
-}*/
-  
-  while (true){
-    if(Serial.available()){
-      Serial.println("ready"); 
-      char[] msg = Serial.read();
-      displayMessage(msg);
+    if (running){
+      return;
+    }else{
+      running=true;
     }
-    //isplayMessage("dead");
-    lightRun();
-    //displayMessage("zebra");
-    lightRun();
-  }
+    
+    FastLED.clear();
+    FastLED.show();
+    notifyPi();
+    delay(1500); //delay to wait for serial response
+
+    String msg_str = "random";
+    if(Serial.available()>0){
+        msg_str = Serial.readString();
+        if(msg_str.equals("random")){
+          doRandom();
+        }else{
+          displayMessage(msg_str);
+          doRandom();
+        }
+    }else{
+      doRandom();
+    }
+
 }
 
-void displayMessage(char message[]){
+void notifyPi(){
+  Serial.println("ready");
+}
+void doRandom(){
+  int rNum=random(3);
+  switch(rNum){
+    case 0:
+      LOWREDDOWN();
+      break;
+    case 1:
+      lightRun();
+      break;
+    case 2:
+      CHRISTMAS();
+      break;
+    case 3:
+      displayMessage("die");
+      break;
+    case 4:
+      displayMessage("helpme");
+      break;
+    case 5:
+      displayMessage("itscoming");
+      break;
+    default:
+      lightRun();
+      break;
+  }
+  running=false;  
+}
+
+void displayMessage(String message){
   int prev_led = -1;
-  for(int i =0; i< strlen(message); i+=1){
+  int ledNum;
+  char letter;
+  int r;
+  int g;
+  int b;
+  int r2;
+  int g2;
+  int b2;
+  for(int i =0; i< message.length(); i+=1){
     FastLED.clear();
     
     if(prev_led >= 0){
@@ -116,31 +130,57 @@ void displayMessage(char message[]){
       leds[prev_led+1] = CRGB(0,0,0);
       FastLED.show();
     }
-    int r=randomColorCode();
-    int g=randomColorCode();
-    int b=randomColorCode();
+    r=randomColorCode();
+    g=randomColorCode();
+    b=randomColorCode();
+    r2=randomColorCode();
+    g2=randomColorCode();
+    b2=randomColorCode();
     
-    char letter = message[i];
-    int ledNum = charToLed.getValueOf(letter);
+    letter = message.charAt(i);
+    ledNum = charToLed.getValueOf(letter);
     leds[ledNum] = CRGB (r,g,b);
-    leds[ledNum+1] = CRGB(r,g,b);
+    leds[ledNum+1] = CRGB(r2,g2,b2);
     prev_led=ledNum;
     
     FastLED.show();
     delay(2000);
+    running=false;
   }
+  //flash all lights in the message
+  FastLED.clear();
+  for(int i=0; i< message.length(); i+=1){
+    r=randomColorCode();
+    g=randomColorCode();
+    b=randomColorCode();
+    r2=randomColorCode();
+    g2=randomColorCode();
+    b2=randomColorCode();
+    letter=message.charAt(i);
+    ledNum=charToLed.getValueOf(letter);
+    leds[ledNum] = CRGB(r,g,b);
+    leds[ledNum+1]= CRGB(r2,g2,b2);
+  }
+  FastLED.show();
+  delay(3000);
   
 }
 
 void lightRun() {
+  int r=randomColorCode();
+  int g=randomColorCode();
+  int b=randomColorCode();
   for (int i =0 ;i< NUM_LEDS; i+=1){
-      leds[i] = CRGB(153,51,255);
+      leds[i] = CRGB(r,g,b);
       FastLED.show();
       delay(20);
   }
 
+  r=randomColorCode();
+  g=randomColorCode();
+  b=randomColorCode();
   for(int i=NUM_LEDS-1; i>=0; i-=1){
-    leds[i] = CRGB(0,255,0);
+    leds[i] = CRGB(r,g,b);
     FastLED.show();
     delay(20);
   }
@@ -149,6 +189,20 @@ void lightRun() {
 int randomColorCode(){
   int rColor = random(255);
   return rColor;
+}
+
+void allBlack(){
+      int r = 13;  
+      int b = 13;  
+      int g = 13;   
+
+      for(int x = 0; x < NUM_LEDS; x++){
+          leds[x] = CRGB(r,g,b);
+      }
+          
+      FastLED.show();
+      delay(7000); 
+      
 }
 
 //Cool functions created by bxl4662
@@ -256,49 +310,10 @@ void CHRISTMAS() {
                     leds[89] = CRGB (255,0,0); //red
                       leds[99] = CRGB (255,0,0); //red
         FastLED.show();
-        t = random(20, 30) * 1000;
-      delay(t);
+      delay(7000);
      FastLED.clear(); 
 }
   
-
-void glowup() {
-  FastLED.clear();
-  //Setting i determines your lowest power value. the second condition determines the max value and the y determines your step
-  for( int i = 60; i < 255; i = i + y ) {
-
-      int r = i;  
-      int b = 0;  
-      int g = 0;   
-
-      for(int x = 0; x < NUM_LEDS; x++){
-          leds[x] = CRGB(r,g,b);
-      }
-          
-      FastLED.show();
-      delay(50); 
-    }
- 
-}
-
-void glowdown() {
-  //Same thing as glowup, except in reverse
-  for (int i = 255; i > 60; i = i - y){
-
-      int r = i;  
-      int b = 0;  
-      int g = 0;   
-
-      for(int x = 0; x < NUM_LEDS; x++){
-          leds[x] = CRGB(r,g,b);
-      }
-          
-      FastLED.show();
-      delay(50); 
-    }      
-}
-
-
 void LOWREDUP(){
      for( int i = 20; i < 150; i = i + y ) {
 
@@ -330,16 +345,3 @@ void LOWREDDOWN(){
     } 
 }
 
-void BLACKOUT(){
-      int r = 0;  
-      int b = 0;  
-      int g = 0;   
-
-      for(int x = 0; x < NUM_LEDS; x++){
-          leds[x] = CRGB(r,g,b);
-      }
-          
-      FastLED.show();
-      delay(30000); 
-      
-}
