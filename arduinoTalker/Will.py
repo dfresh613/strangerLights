@@ -1,8 +1,8 @@
 from ArduinoInterface import ArduinoInterface
 from ApiInterface import ApiInterface
 
-api_comm= ApiInterface()
-arduino_comm= ArduinoInterface()
+api_comm = ApiInterface()
+arduino_comm = ArduinoInterface()
 
 
 def generateRandom():
@@ -11,7 +11,7 @@ def generateRandom():
 q_pos = -1
 # Always loop listening for message from arduino
 while True:        
-    incoming_msg=arduino_comm.ser.readline()
+    incoming_msg = arduino_comm.ser.readline()
     print "Received arduino message {} ".format(incoming_msg);
     if q_pos != -1:
         api_comm.remove_message(q_pos)
