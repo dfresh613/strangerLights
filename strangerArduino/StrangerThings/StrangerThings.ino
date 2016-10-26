@@ -10,6 +10,17 @@ HashMap<char*,int> charToLed = HashMap<char*,int>( hashRawArray , HASH_SIZE );
 
 #define NUM_LEDS 100 //change this for the number of LEDs in the strip
 #define COLOR_ORDER RGB
+#define SIGN_LED 96
+
+CRGB aqua = CRGB(0, 255, 255); // aqua 
+CRGB pink = CRGB (255,105,180); //hot pink
+CRGB purple = CRGB (76, 0, 153); //dark purple
+CRGB orange = CRGB (255,165,0); //orange 
+CRGB red = CRGB (255,0,0);
+CRGB blue = CRGB(0,0, 255);
+CRGB yellow = CRGB (255,255,0); //yellow
+int r,g,b;
+
 
 CRGB leds[NUM_LEDS]; 
 boolean running=false;
@@ -50,7 +61,6 @@ void setup(){
     charToLed[25]('y',90);
     charToLed[26]('z',93);
     
-    
     randomSeed(analogRead(0));
 }
 
@@ -84,8 +94,9 @@ void loop(){
 void notifyPi(){
   Serial.println("ready");
 }
+
 void doRandom(){
-  int rNum=random(3);
+  int rNum=random(7);
   switch(rNum){
     case 0:
       LOWREDDOWN();
@@ -97,6 +108,23 @@ void doRandom(){
       CHRISTMAS();
       break;
     case 3:
+      blinkSection(SIGN_LED, 4, 20);
+      break;
+    case 4: 
+      blinkSection(0, 99, 20);
+      break;
+    case 5:
+      endsToMiddle();
+      break;
+    case 6:
+      randomLights();
+      break;
+    default:
+      lightRun();
+      break;
+
+    /* Disabled message displays as I don't want them interfering with user messages
+    case 3:
       displayMessage("die");
       break;
     case 4:
@@ -105,12 +133,85 @@ void doRandom(){
     case 5:
       displayMessage("itscoming");
       break;
-    default:
-      lightRun();
-      break;
+      */
   }
   running=false;  
 }
+
+//Start at the last light, and beginning light and meet in the middle
+void endsToMiddle(){
+  FastLED.clear();
+  FastLED.show();
+  int endIdx = NUM_LEDS-1;
+
+  r=randomColorCode();
+  g=randomColorCode();
+  b=randomColorCode();
+  for(int i =0; i< NUM_LEDS/2; i++){
+    FastLED.clear();
+    leds[i] = CRGB(r,g,b);
+    leds[endIdx -i]=CRGB(r,g,b);
+    FastLED.show();
+    delay(100);
+  }
+  
+  for(int i=0; i<NUM_LEDS/2; i++){
+    r=randomColorCode();
+    g=randomColorCode();
+    b=randomColorCode();
+    leds[(NUM_LEDS/2) -i] = CRGB(r,g,b);
+    leds[(NUM_LEDS/2)+ i]=CRGB(r,g,b);
+    FastLED.show();
+    delay(20);
+  }
+  delay(1000);
+  
+}
+
+//turn on randomLights for a few seconds
+void randomLights(){
+  int lightNum;
+  int numLights;
+  int sections;
+  for(int i=0;i<5;i++){
+      FastLED.clear();
+      sections = random(2,5);
+      //do for random sections of lights
+      for(int s=0; s<sections; s++){
+        lightNum= random(100);
+        numLights = random(5);
+        
+        for(int x=0; x<numLights; x++){
+          leds[lightNum+x] = CRGB(randomColorCode(), randomColorCode(), randomColorCode());
+        }
+      }
+      FastLED.show();
+      delay(1000);
+  }
+  blinkSection(0, 99, 3);
+
+  
+}
+
+//flashes lights starting at startingPos position, includes a section of startingPos + numLights numlights and flashes numFlashes times 
+void blinkSection(int startingPos, int numLights, int numFlashes){
+  FastLED.clear();
+  int modNum;
+  for(int x=0; x < numFlashes; x++){
+    for(int i=1; i<= numLights; i++){
+      modNum = i % numLights;
+      leds[startingPos + modNum] = CRGB(randomColorCode(), randomColorCode(), randomColorCode());
+      if (modNum == 0){
+          FastLED.show();
+          delay(100);
+          FastLED.clear();
+      }
+  }
+    
+  }
+  
+}
+
 
 void displayMessage(String message){
   int prev_led = -1;
@@ -195,20 +296,6 @@ void lightRun() {
 int randomColorCode(){
   int rColor = random(255);
   return rColor;
-}
-
-void allBlack(){
-      int r = 13;  
-      int b = 13;  
-      int g = 13;   
-
-      for(int x = 0; x < NUM_LEDS; x++){
-          leds[x] = CRGB(r,g,b);
-      }
-          
-      FastLED.show();
-      delay(7000); 
-      
 }
 
 //Cool functions created by bxl4662
@@ -297,7 +384,6 @@ void CHRISTMAS() {
                       leds[97] = CRGB (255,105,180); //hot pink
     leds[8] = CRGB (0,128,0); //dark green 
       leds[18] = CRGB (0,128,0); //dark green 
-        leds[28] = CRGB (0,128,0); //dark green 
           leds[38] = CRGB (0,128,0); //dark green 
             leds[48] = CRGB (0,128,0); //dark green 
               leds[58] = CRGB (0,128,0); //dark green 
