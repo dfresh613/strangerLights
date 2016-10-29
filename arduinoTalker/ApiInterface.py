@@ -13,14 +13,22 @@ class ApiInterface:
         resp = requests.get(self.next_message_uri)
         print resp.json()
         data = resp.json()
-        if data['success']:
-            message = data['message']
-            q_pos = data['id']
-            print "Succesfully got the next message: {}. Queue pos: {}".format(message,q_pos)
-            return message, q_pos
-        else:
-            print "Unable to pull the next message, perhaps there's nothing in the queue"
-            return "Random", -1
+        q_pos = None
+        #If there's any exceptions in getting the next message, catch and return random
+        try:
+            if data['success']:
+                message = data['message']
+                q_pos = data['id']
+                print "Succesfully got the next message: {}. Queue pos: {}".format(message,q_pos)
+                return message, q_pos
+            else:
+                print "Unable to pull the next message, perhaps there's nothing in the queue"
+                return "Random", -1
+        except:
+            if q_pos is None:
+                q_pos = -1
+            print "There was an error parsing the message somewhere, just sending random"
+            return "Random", q_pos
 
     def remove_message(self, queue_pos):
         print "Removing id {} from queue".format(queue_pos)
