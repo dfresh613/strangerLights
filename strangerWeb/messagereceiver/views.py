@@ -23,6 +23,9 @@ def queue(request):
         message = request.POST['message']
         added_by = request.POST['author']
         try:
+            if "\ud" in message:
+                error(request, "I don't take none of that emoji crap")
+                return redirect(reverse('messagereceiver:index'))
             msg_obj = Message(message_text=message, added_by=added_by)
             # place holder for now. Colors of message will be randomized for cooler effect
             color_obj = Color.objects.get(id=5)
