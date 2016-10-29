@@ -25,7 +25,6 @@ def queue(request):
         try:
             msg_obj = Message(message_text=message, added_by=added_by)
             # place holder for now. Colors of message will be randomized for cooler effect
-            color_obj = Color.objects.get(id=5)
             msg_obj.save()
             new_item = Queue(message=msg_obj, color=None)
             new_item.save()
