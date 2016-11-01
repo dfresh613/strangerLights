@@ -1,6 +1,4 @@
 # strangerLights
-*Note This is project is only about a week old, and I am still polishing it. Check back in about a week for the fully completed project
-
 StrangerLights is an arduino/raspberry pi implementation to spell messages out with LEDs. A raspberry pi provides
 a django based web interface for users to queue LED messages to send to the Arduino.
 
