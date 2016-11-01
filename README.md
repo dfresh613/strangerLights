@@ -3,7 +3,7 @@ StrangerLights is an arduino/raspberry pi implementation to spell messages out w
 a django based web interface for users to queue LED messages to send to the Arduino.
 
 ###ArduinoTalker
-Contains 'Will.py' and dependencies, a script script which will actively pull from the web interface's API and send messages
+Contains 'Will.py' and dependencies, a script which will actively pull from the web interface's API and send messages
 through the serial interface to the Arduino to display via LEDs
 
 ###StrangerWeb
