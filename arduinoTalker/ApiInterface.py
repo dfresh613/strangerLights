@@ -1,18 +1,24 @@
 import requests
 import json
+import sys
 
 
 class ApiInterface:
 
     def __init__(self): 
-        self.address = "http://localhost:80/messagereceiver"
+        self.address = "http://localhost:8000/messagereceiver"
         self.queue_uri = self.address+'/queue'
         self.next_message_uri = self.queue_uri+'/next'
 
     def get_next_message(self):
         resp = requests.get(self.next_message_uri)
-        print resp.json()
-        data = resp.json()
+        try:
+            data = resp.json()
+        except:
+            print "Error: Unable to retrieve any data from URL: {}".format(self.address)
+            print "Response Code: {}".format(resp.status_code)
+            sys.exit(4)
+
         q_pos = None
         #If there's any exceptions in getting the next message, catch and return random
         try:
