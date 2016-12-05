@@ -17,7 +17,7 @@ class ApiInterface:
         except:
             print "Error: Unable to retrieve any data from URL: {}".format(self.address)
             print "Response Code: {}".format(resp.status_code)
-            sys.exit(4)
+            return "Random", -1
 
         q_pos = None
         #If there's any exceptions in getting the next message, catch and return random
