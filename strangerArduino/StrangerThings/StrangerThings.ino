@@ -10,22 +10,25 @@ HashMap<char*,int> charToLed = HashMap<char*,int>( hashRawArray , HASH_SIZE );
 
 #define NUM_LEDS 100 //change this for the number of LEDs in the strip
 #define COLOR_ORDER RGB
-#define SIGN_LED 96
 
-CRGB aqua = CRGB(0, 255, 255); // aqua 
-CRGB pink = CRGB (255,105,180); //hot pink
-CRGB purple = CRGB (76, 0, 153); //dark purple
-CRGB orange = CRGB (255,165,0); //orange 
-CRGB red = CRGB (255,0,0);
+CRGB aqua = CRGB(0, 255, 255);
+CRGB hot_pink = CRGB (255,105,180);
+CRGB dark_orchid = CRGB(153, 50, 204);
+CRGB spring_green = CRGB(0,255,127);
+CRGB dark_purple = CRGB (76, 0, 153);
+CRGB dark_green = CRGB (0,128,0);
+CRGB orange = CRGB(255,165,0); 
+CRGB red = CRGB(255,0,0);
 CRGB blue = CRGB(0,0, 255);
-CRGB yellow = CRGB (255,255,0); //yellow
+CRGB royal_blue = CRGB (65,105,255);
+CRGB yellow = CRGB(255,255,0);
 int r,g,b;
+CRGB color, color2;
 
 
 CRGB leds[NUM_LEDS]; 
 boolean running=false;
 
-//bxl4662's variable for LOWEREDUP and LOWEREDDOWN functions
 int y = 1;
 
 void setup(){
@@ -43,23 +46,23 @@ void setup(){
     charToLed[7]('g',24);
     charToLed[8]('h',27);
     charToLed[9]('i',30);
-    charToLed[10]('j',63);
-    charToLed[11]('k',60);
-    charToLed[12]('l',57);
-    charToLed[13]('m',54);
-    charToLed[14]('n',50);
-    charToLed[15]('o',46);
-    charToLed[16]('p',43);
-    charToLed[17]('q',40);
-    charToLed[18]('r',37);
-    charToLed[19]('s',71);
-    charToLed[20]('t',74);
-    charToLed[21]('u',77);
-    charToLed[22]('v',80);
-    charToLed[23]('w',84);
-    charToLed[24]('x',87);
-    charToLed[25]('y',90);
-    charToLed[26]('z',93);
+    charToLed[10]('j',33);
+    charToLed[11]('k',36);
+    charToLed[12]('l',39);
+    charToLed[13]('m',42);
+    charToLed[14]('n',48);
+    charToLed[15]('o',50);
+    charToLed[16]('p',54);
+    charToLed[17]('q',57);
+    charToLed[18]('r',61);
+    charToLed[19]('s',63);
+    charToLed[20]('t',68);
+    charToLed[21]('u',71);
+    charToLed[22]('v',74);
+    charToLed[23]('w',77);
+    charToLed[24]('x',80);
+    charToLed[25]('y',84);
+    charToLed[26]('z',87);
     
     randomSeed(analogRead(0));
 }
@@ -70,12 +73,10 @@ void loop(){
     }else{
       running=true;
     }
-    
     FastLED.clear();
     FastLED.show();
     notifyPi();
-    delay(1500); //delay to wait for serial response
-
+    delay(random(2500,8000)); //delay to wait for serial response, randomize the delay to make it creepier
     String msg_str = "random";
     if(Serial.available()>0){
         msg_str = Serial.readString();
@@ -88,6 +89,7 @@ void loop(){
     }else{
       doRandom();
     }
+    running=false;
 
 }
 
@@ -96,27 +98,24 @@ void notifyPi(){
 }
 
 void doRandom(){
-  int rNum=random(7);
+  int rNum=random(6);
   switch(rNum){
     case 0:
-      LOWREDDOWN();
+      glowRedUp();
       break;
     case 1:
       lightRun();
       break;
     case 2:
-      CHRISTMAS();
+      christmas();
       break;
-    case 3:
-      blinkSection(SIGN_LED, 4, 20);
+    case 3: 
+      blinkSection(0, 99, random(1 ,5));
       break;
-    case 4: 
-      blinkSection(0, 99, 20);
-      break;
-    case 5:
+    case 4:
       endsToMiddle();
       break;
-    case 6:
+    case 5:
       randomLights();
       break;
     default:
@@ -135,8 +134,9 @@ void doRandom(){
       break;
       */
   }
-  running=false;  
 }
+
+
 
 //Start at the last light, and beginning light and meet in the middle
 void endsToMiddle(){
@@ -144,23 +144,19 @@ void endsToMiddle(){
   FastLED.show();
   int endIdx = NUM_LEDS-1;
 
-  r=randomColorCode();
-  g=randomColorCode();
-  b=randomColorCode();
+  color = randomColor();
   for(int i =0; i< NUM_LEDS/2; i++){
     FastLED.clear();
-    leds[i] = CRGB(r,g,b);
-    leds[endIdx -i]=CRGB(r,g,b);
+    leds[i] = color;
+    leds[endIdx -i] = color;
     FastLED.show();
     delay(100);
   }
   
   for(int i=0; i<NUM_LEDS/2; i++){
-    r=randomColorCode();
-    g=randomColorCode();
-    b=randomColorCode();
-    leds[(NUM_LEDS/2) -i] = CRGB(r,g,b);
-    leds[(NUM_LEDS/2)+ i]=CRGB(r,g,b);
+    color = randomColor();
+    leds[(NUM_LEDS/2) -i] = color;
+    leds[(NUM_LEDS/2)+ i] = color;
     FastLED.show();
     delay(20);
   }
@@ -168,48 +164,42 @@ void endsToMiddle(){
   
 }
 
-//turn on randomLights for a few seconds
+//Turn on Random strips of 5
 void randomLights(){
-  int lightNum;
+  int startingLight;
+  int endingLight;
   int numLights;
   int sections;
-  for(int i=0;i<5;i++){
-      FastLED.clear();
       sections = random(2,5);
       //do for random sections of lights
       for(int s=0; s<sections; s++){
-        lightNum= random(100);
-        numLights = random(5);
-        
-        for(int x=0; x<numLights; x++){
-          leds[lightNum+x] = CRGB(randomColorCode(), randomColorCode(), randomColorCode());
-        }
+        startingLight=random(100)%94;
+        endingLight=startingLight+5;
+        blinkSection(startingLight,endingLight, 1);
       }
-      FastLED.show();
-      delay(1000);
-  }
-  blinkSection(0, 99, 3);
-
-  
 }
 
-//flashes lights starting at startingPos position, includes a section of startingPos + numLights numlights and flashes numFlashes times 
-void blinkSection(int startingPos, int numLights, int numFlashes){
+//flashes lights starting at startingPos position to end position numlights and flashes numFlashes times 
+void blinkSection(int startingPos, int endPos, int numFlashes){
   FastLED.clear();
-  int modNum;
+  int ledNum;
+  //this first loop is for how many times the blinking effect will occur
   for(int x=0; x < numFlashes; x++){
-    for(int i=1; i<= numLights; i++){
-      modNum = i % numLights;
-      leds[startingPos + modNum] = CRGB(randomColorCode(), randomColorCode(), randomColorCode());
-      if (modNum == 0){
-          FastLED.show();
-          delay(100);
-          FastLED.clear();
+    //this second loop makes the leds flash multuple times
+    for(int quickflash = 1; quickflash<5; quickflash++){
+      //this third loop loop turns on each Led with a different color
+      for(ledNum=startingPos; ledNum<=endPos; ledNum++){
+        leds[ledNum] = randomColor();
       }
+       FastLED.show();
+       delay(100);
+       FastLED.clear();
+    }
+    FastLED.show();
+    delay(1000);
   }
-    
-  }
-  
+  FastLED.show();
+
 }
 
 
@@ -217,20 +207,9 @@ void displayMessage(String message){
   int prev_led = -1;
   int ledNum;
   char letter;
-  int r;
-  int g;
-  int b;
-  int r2;
-  int g2;
-  int b2;
   for(int i =0; i< message.length(); i+=1){
     FastLED.clear();
-    
-    if(prev_led >= 0){
-      leds[prev_led] = CRGB(0,0,0);
-      leds[prev_led+1] = CRGB(0,0,0);
-      FastLED.show();
-    }
+    FastLED.show();
     
     letter = message.charAt(i);
     if (isWhitespace(letter)){
@@ -238,16 +217,9 @@ void displayMessage(String message){
         continue;
     }
 
-    r=randomColorCode();
-    g=randomColorCode();
-    b=randomColorCode();
-    r2=randomColorCode();
-    g2=randomColorCode();
-    b2=randomColorCode();
-    
     ledNum = charToLed.getValueOf(letter);
-    leds[ledNum] = CRGB (r,g,b);
-    leds[ledNum+1] = CRGB(r2,g2,b2);
+    leds[ledNum] = randomColor();
+    leds[ledNum+1] = randomColor();
     prev_led=ledNum;
     
     FastLED.show();
@@ -257,16 +229,10 @@ void displayMessage(String message){
   //flash all lights in the message
   FastLED.clear();
   for(int i=0; i< message.length(); i+=1){
-    r=randomColorCode();
-    g=randomColorCode();
-    b=randomColorCode();
-    r2=randomColorCode();
-    g2=randomColorCode();
-    b2=randomColorCode();
     letter=message.charAt(i);
     ledNum=charToLed.getValueOf(letter);
-    leds[ledNum] = CRGB(r,g,b);
-    leds[ledNum+1]= CRGB(r2,g2,b2);
+    leds[ledNum] = randomColor();
+    leds[ledNum+1]= randomColor();
   }
   FastLED.show();
   delay(3000);
@@ -274,20 +240,14 @@ void displayMessage(String message){
 }
 
 void lightRun() {
-  int r=randomColorCode();
-  int g=randomColorCode();
-  int b=randomColorCode();
   for (int i =0 ;i< NUM_LEDS; i+=1){
-      leds[i] = CRGB(r,g,b);
+      leds[i] = randomColor();
       FastLED.show();
       delay(20);
   }
 
-  r=randomColorCode();
-  g=randomColorCode();
-  b=randomColorCode();
   for(int i=NUM_LEDS-1; i>=0; i-=1){
-    leds[i] = CRGB(r,g,b);
+    leds[i] = randomColor();
     FastLED.show();
     delay(20);
   }
@@ -298,120 +258,53 @@ int randomColorCode(){
   return rColor;
 }
 
+CRGB randomColor(){
+  r = randomColorCode();
+  g = randomColorCode();
+  b = randomColorCode();
+  
+  return CRGB(r,g,b);
+}
+
 //Cool functions created by bxl4662
-void CHRISTMAS() {
+void christmas() {
   FastLED.clear();
-    leds[0] = CRGB (0,255,255); //aqua
-      leds[10] = CRGB (0,255,255); //aqua
-        leds[20] = CRGB (0,255,255); //aqua
-          leds[30] = CRGB (0,255,255); //aqua
-            leds[40] = CRGB (0,255,255); //aqua
-              leds[50] = CRGB (0,255,255); //aqua
-                leds[60] = CRGB (0,255,255); //aqua
-                  leds[70] = CRGB (0,255,255); //aqua
-                    leds[80] = CRGB (0,255,255); //aqua
-                      leds[90] = CRGB (0,255,255); //aqua
-    leds[1] = CRGB (153, 50, 204); //dark orchid
-      leds[11] = CRGB (153, 50, 204); //dark orchid
-        leds[21] = CRGB (153, 50, 204); //dark orchid
-          leds[31] = CRGB (153, 50, 204); //dark orchid
-            leds[41] = CRGB (153, 50, 204); //dark orchid
-              leds[51] = CRGB (153, 50, 204); //dark orchid
-                leds[61] = CRGB (153, 50, 204); //dark orchid
-                  leds[71] = CRGB (153, 50, 204); //dark orchid
-                    leds[81] = CRGB (153, 50, 204); //dark orchid
-                      leds[91] = CRGB (153, 50, 204); //dark orchid
-    leds[2] = CRGB (255,255,0); //yellow
-      leds[12] = CRGB (255,255,0); //yellow
-        leds[22] = CRGB (255,255,0); //yellow
-          leds[32] = CRGB (255,255,0); //yellow
-            leds[42] = CRGB (255,255,0); //yellow
-              leds[52] = CRGB (255,255,0); //yellow
-                leds[62] = CRGB (255,255,0); //yellow
-                  leds[72] = CRGB (255,255,0); //yellow
-                    leds[82] = CRGB (255,255,0); //yellow
-                      leds[92] = CRGB (255,255,0); //yellow
-                                        
-    leds[3] = CRGB (0,255,127); //spring green
-      leds[13] = CRGB (0,255,127); //spring green
-        leds[23] = CRGB (0,255,127); //spring green
-          leds[33] = CRGB (0,255,127); //spring green
-            leds[43] = CRGB (0,255,127); //spring green
-              leds[53] = CRGB (0,255,127); //spring green
-                leds[63] = CRGB (0,255,127); //spring green
-                  leds[73] = CRGB (0,255,127); //spring green
-                    leds[83] = CRGB (0,255,127); //spring green
-                      leds[93] = CRGB (0,255,127); //spring green
-    leds[4] = CRGB (255,165,0); //orange 
-      leds[14] = CRGB (255,165,0); //orange 
-        leds[24] = CRGB (255,165,0); //orange 
-          leds[34] = CRGB (255,165,0); //orange 
-            leds[44] = CRGB (255,165,0); //orange 
-              leds[54] = CRGB (255,165,0); //orange 
-                leds[64] = CRGB (255,165,0); //orange 
-                  leds[74] = CRGB (255,165,0); //orange 
-                    leds[84] = CRGB (255,165,0); //orange 
-                      leds[94] = CRGB (255,165,0); //orange 
-    leds[5] = CRGB (65,105,255); //royal blue
-      leds[15] = CRGB (65,105,255); //royal blue
-        leds[25] = CRGB (65,105,255); //royal blue
-          leds[35] = CRGB (65,105,255); //royal blue
-            leds[45] = CRGB (65,105,255); //royal blue
-              leds[55] = CRGB (65,105,255); //royal blue
-                leds[65] = CRGB (65,105,255); //royal blue
-                  leds[75] = CRGB (65,105,255); //royal blue
-                    leds[85] = CRGB (65,105,255); //royal blue
-                      leds[95] = CRGB (65,105,255); //royal blue
-    leds[6] = CRGB (76, 0, 153); //dark purple
-      leds[16] = CRGB (76, 0, 153); //dark purple
-        leds[26] = CRGB (76, 0, 153); //dark purple
-          leds[36] = CRGB (76, 0, 153); //dark purple
-            leds[46] = CRGB (76, 0, 153); //dark purple
-              leds[56] = CRGB (76, 0, 153); //dark purple
-                leds[66] = CRGB (76, 0, 153); //dark purple
-                  leds[76] = CRGB (76, 0, 153); //dark purple
-                    leds[86] = CRGB (76, 0, 153); //dark purple
-                      leds[96] = CRGB (76, 0, 153); //dark purple
-    leds[7] = CRGB (255,105,180); //hot pink
-      leds[17] = CRGB (255,105,180); //hot pink
-        leds[27] = CRGB (255,105,180); //hot pink
-          leds[37] = CRGB (255,105,180); //hot pink
-            leds[47] = CRGB (255,105,180); //hot pink
-              leds[57] = CRGB (255,105,180); //hot pink
-                leds[67] = CRGB (255,105,180); //hot pink
-                  leds[77] = CRGB (255,105,180); //hot pink
-                    leds[87] = CRGB (255,105,180); //hot pink
-                      leds[97] = CRGB (255,105,180); //hot pink
-    leds[8] = CRGB (0,128,0); //dark green 
-      leds[18] = CRGB (0,128,0); //dark green 
-          leds[38] = CRGB (0,128,0); //dark green 
-            leds[48] = CRGB (0,128,0); //dark green 
-              leds[58] = CRGB (0,128,0); //dark green 
-                leds[68] = CRGB (0,128,0); //dark green 
-                  leds[78] = CRGB (0,128,0); //dark green 
-                    leds[88] = CRGB (0,128,0); //dark green 
-                      leds[98] = CRGB (0,128,0); //dark green 
-    leds[9] = CRGB (255,0,0); //red
-      leds[19] = CRGB (255,0,0); //red
-        leds[29] = CRGB (255,0,0); //red
-          leds[39] = CRGB (255,0,0); //red
-            leds[49] = CRGB (255,0,0); //red
-              leds[59] = CRGB (255,0,0); //red
-                leds[69] = CRGB (255,0,0); //red
-                  leds[79] = CRGB (255,0,0); //red
-                    leds[89] = CRGB (255,0,0); //red
-                      leds[99] = CRGB (255,0,0); //red
-        FastLED.show();
-      delay(7000);
-     FastLED.clear(); 
+  for (int i=0; i<100; i++){
+    int modNum = i % 10;
+    if (modNum== 0){
+      leds[i] = aqua;
+    }else if(modNum== 1){
+      leds[i] = dark_orchid;
+    }else if(modNum== 2){
+      leds[i] = yellow;
+    }else if(modNum== 3){
+      leds[i] = spring_green;
+    }else if(modNum== 4){
+      leds[i] = orange;
+    }else if(modNum== 5){
+      leds[i] = royal_blue; 
+    }else if(modNum== 6){
+      leds[i] = dark_purple;
+    }else if(modNum== 7){
+      leds[i] = hot_pink;
+    }else if(modNum== 8){
+      leds[i] = dark_green;
+    }else if(modNum== 9){
+      leds[i] = red;
+    }
+  }
+   
+  FastLED.show();
+  delay(7000);
+  FastLED.clear(); 
 }
   
-void LOWREDUP(){
+void glowRedUp(){
      for( int i = 20; i < 150; i = i + y ) {
 
-      int r = i;  
-      int b = 0;  
-      int g = 0;   
+      r = i;  
+      b = 0;  
+      g = 0;   
 
       for(int x = 0; x < NUM_LEDS; x++){
           leds[x] = CRGB(r,g,b);
@@ -421,12 +314,12 @@ void LOWREDUP(){
       delay(100); 
     } 
 }
-void LOWREDDOWN(){
+void glowRedDown(){
      for(int i = 150; i > 20; i = i - y) {
 
-      int r = i;  
-      int b = 0;  
-      int g = 0;   
+      r = i;  
+      b = 0;  
+      g = 0;   
 
       for(int x = 0; x < NUM_LEDS; x++){
           leds[x] = CRGB(r,g,b);
