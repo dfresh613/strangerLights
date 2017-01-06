@@ -46,23 +46,23 @@ void setup(){
     charToLed[7]('g',24);
     charToLed[8]('h',27);
     charToLed[9]('i',30);
-    charToLed[10]('j',63);
-    charToLed[11]('k',60);
-    charToLed[12]('l',57);
-    charToLed[13]('m',54);
-    charToLed[14]('n',50);
-    charToLed[15]('o',46);
-    charToLed[16]('p',43);
-    charToLed[17]('q',40);
-    charToLed[18]('r',37);
-    charToLed[19]('s',71);
-    charToLed[20]('t',74);
-    charToLed[21]('u',77);
-    charToLed[22]('v',80);
-    charToLed[23]('w',84);
-    charToLed[24]('x',87);
-    charToLed[25]('y',90);
-    charToLed[26]('z',93);
+    charToLed[10]('j',33);
+    charToLed[11]('k',36);
+    charToLed[12]('l',39);
+    charToLed[13]('m',42);
+    charToLed[14]('n',48);
+    charToLed[15]('o',50);
+    charToLed[16]('p',54);
+    charToLed[17]('q',57);
+    charToLed[18]('r',61);
+    charToLed[19]('s',63);
+    charToLed[20]('t',68);
+    charToLed[21]('u',71);
+    charToLed[22]('v',74);
+    charToLed[23]('w',77);
+    charToLed[24]('x',80);
+    charToLed[25]('y',84);
+    charToLed[26]('z',87);
     
     randomSeed(analogRead(0));
 }
@@ -73,12 +73,10 @@ void loop(){
     }else{
       running=true;
     }
-    
     FastLED.clear();
     FastLED.show();
     notifyPi();
-    delay(1500); //delay to wait for serial response
-
+    delay(random(2500,8000)); //delay to wait for serial response, randomize the delay to make it creepier
     String msg_str = "random";
     if(Serial.available()>0){
         msg_str = Serial.readString();
@@ -91,6 +89,7 @@ void loop(){
     }else{
       doRandom();
     }
+    running=false;
 
 }
 
@@ -111,7 +110,7 @@ void doRandom(){
       christmas();
       break;
     case 3: 
-      blinkSection(0, 99, 20);
+      blinkSection(0, 99, random(1 ,5));
       break;
     case 4:
       endsToMiddle();
@@ -135,7 +134,6 @@ void doRandom(){
       break;
       */
   }
-  running=false;  
 }
 
 
@@ -166,39 +164,42 @@ void endsToMiddle(){
   
 }
 
-//turn on randomLights for a few seconds
+//Turn on Random strips of 5
 void randomLights(){
-  int lightNum;
+  int startingLight;
+  int endingLight;
   int numLights;
   int sections;
-  for(int i=0;i<5;i++){
       sections = random(2,5);
       //do for random sections of lights
       for(int s=0; s<sections; s++){
-        lightNum= random(100);
-        blinkSection(lightNum,random(8), 1);
+        startingLight=random(100)%94;
+        endingLight=startingLight+5;
+        blinkSection(startingLight,endingLight, 1);
       }
-  }
-  blinkSection(0, 99, 3);
 }
 
-//flashes lights starting at startingPos position, includes a section of startingPos + numLights numlights and flashes numFlashes times 
-void blinkSection(int startingPos, int numLights, int numFlashes){
+//flashes lights starting at startingPos position to end position numlights and flashes numFlashes times 
+void blinkSection(int startingPos, int endPos, int numFlashes){
   FastLED.clear();
   int ledNum;
+  //this first loop is for how many times the blinking effect will occur
   for(int x=0; x < numFlashes; x++){
-    for(int i=1; i<= numLights; i++){
-      ledNum = startingPos + numLights;
-      if (ledNum >= 100){
-        ledNum = 99; 
+    //this second loop makes the leds flash multuple times
+    for(int quickflash = 1; quickflash<5; quickflash++){
+      //this third loop loop turns on each Led with a different color
+      for(ledNum=startingPos; ledNum<=endPos; ledNum++){
+        leds[ledNum] = randomColor();
       }
-      leds[ledNum] = randomColor();
+       FastLED.show();
+       delay(100);
+       FastLED.clear();
     }
-     FastLED.show();
-     delay(100);
-     FastLED.clear();
+    FastLED.show();
+    delay(1000);
   }
-  
+  FastLED.show();
+
 }
 
 
