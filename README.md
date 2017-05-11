@@ -12,7 +12,7 @@ Django based web Interface providing APIs for users to queue messages, remove me
 ### StrangerArduino
 Arduino sketch code which creates a char to int hashmap of letters to LED positions. Actively listens through serial connection
 for messages and uses the hashmap to display them with the displayMessage() function. If no messages are present, it will simply
-do a random glowing routine (some of which were originally defined by bxl4662).
+do a random glowing routine
 
 Quick youtube POC:
 https://www.youtube.com/watch?v=IDPV9tJOkKA&feature=youtu.be
