@@ -1,6 +1,6 @@
 import serial
-from Will import arg_parser
-
+import sys
+from serial.serialutil import SerialException
 class ArduinoInterface:
     """
     Class providing various communication methods for interacting with an arduino connected serially
@@ -10,7 +10,11 @@ class ArduinoInterface:
         Initialize the class
         :param serial_str: serial connection location.
         """
-        self.ser=serial.Serial(serial_str, 9600)
+        try:
+            self.ser = serial.Serial(serial_str, 9600)
+        except SerialException:
+            print("Unable to connect to arduino on serial connection: {}".format(serial_str))
+            sys.exit(5)
 
     def push_message(self, message):
         self.ser.write(message.encode())

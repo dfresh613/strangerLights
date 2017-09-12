@@ -1,2 +1,6 @@
 .idea/
 idea/
+build
+.DS_Store
+dist/
+*.egg

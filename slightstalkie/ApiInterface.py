@@ -1,5 +1,6 @@
 import requests
-
+from requests.exceptions import ConnectionError
+import sys
 class ApiInterface:
 
     def __init__(self, host):
@@ -26,7 +27,11 @@ class ApiInterface:
         Get's the entire queue of messages available
         :return:
         """
-        print(self.get_json(self.queue_uri), 200)
+        try:
+            print(self.get_json(self.queue_uri,200))
+        except ConnectionError:
+            print("Unable to connect to strangerapi host ({})".format(self.address))
+            sys.exit(5)
 
     def get_next_message(self):
         """
