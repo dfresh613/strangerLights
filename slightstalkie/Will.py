@@ -1,5 +1,6 @@
 from ArduinoInterface import ArduinoInterface
 from ApiInterface import ApiInterface
+import os
 import argparse
 import sys
 
@@ -23,8 +24,9 @@ def arg_parser(requires_action=False):
     parser = argparse.ArgumentParser(
         description="Provide parameters for interacting with the strangerlights api, or strangerarduino interface")
     parser.add_argument('-i', '--host', type=str, required=False, help='Hostname:port of the strangerthings web api.'
-                                                                       ' Defaults to localhost', default="localhost")
-    parser.add_argument('-s', '--serial', type=str, required=False, default='/dev/ttyACM0',
+                                                                       ' Defaults to localhost',
+                        default=os.getenv("SWEB_HOST", "localhost"))
+    parser.add_argument('-s', '--serial', type=str, required=False, default=os.getenv('SARDUINO_SERIAL', '/dev/ttyACM0'),
                         help='Serial connection location for connected arduino. Defaults to /dev/ttyACM0')
     if requires_action:
         parser.add_argument('action', nargs='+', type=str, help='The action to take. Possible actions are: {}'

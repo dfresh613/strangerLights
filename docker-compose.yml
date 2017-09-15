@@ -4,5 +4,9 @@ services:
     image: drfresh613/strangerweb:0.0.1
     volumes:
       - /tmp/sweb_data:/opt/strangerweb/data
+    expose:
+      - "80:8000"
   slightstalkie:
     image: drfresh613/slightstalkie:0.0.1
+    environment:
+      SWEB_HOST: strangerweb
