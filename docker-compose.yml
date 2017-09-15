@@ -1,0 +1,8 @@
+version: '3'
+services:
+  strangerweb:
+    image: drfresh613/strangerweb:0.0.1
+    volumes:
+      - /tmp/sweb_data:/opt/strangerweb/data
+  slightstalkie:
+    image: drfresh613/slightstalkie:0.0.1
