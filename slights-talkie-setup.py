@@ -2,7 +2,7 @@
 from distutils.core import setup
 import setuptools
 setup(name='slightsTalkie',
-      version='0.0.1',
+      version='0.0.3',
       description="Contains libraries to communicate with both the web application api and the arduino serial listener. "
                   "This allows for sending and retrieving messages from both interfaces. Will.py uses these libraries to"
                   " inform the arduino serial interface what messages is next in the queue",
@@ -14,6 +14,7 @@ setup(name='slightsTalkie',
       license="MIT",
       install_requires=[
           'requests',
+          'pyserial'
       ],
       scripts=['bin/slightsTalkie', 'bin/strangerapi'],
       classifiers=[
