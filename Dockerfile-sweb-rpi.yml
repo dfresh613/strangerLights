@@ -1,0 +1,18 @@
+#http://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
+from resin/raspberrypi3-python:3.6-wheezy
+ENV PYTHONUNBUFFERED 1
+COPY strangerWeb /opt/strangerweb
+WORKDIR /opt/strangerweb
+RUN pip install -r requirements.txt ; \
+mkdir /opt/strangerweb/data; \
+chmod +x scripts/start_strangerweb.sh; \
+apt-get update; \
+apt-get install -y nginx
+RUN ln -s /opt/strangerweb/strangerLights/strangerweb_nginx.conf /etc/nginx/sites-enabled/
+RUN python manage.py collectstatic
+RUN update-rc.d nginx enable
+
+
+CMD scripts/start_strangerweb.sh
+
+

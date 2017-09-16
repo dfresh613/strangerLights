@@ -2,9 +2,9 @@ version: '3'
 services:
   strangerweb:
     #build:
-    #  dockerfile: dockerfile-sweb.yml
+    #  dockerfile: dockerfile-sweb-rpi.yml
     #  context: .
-    image: drfresh613/strangerweb:0.0.1
+    image: drfresh613/strangerweb:0.0.1-rpi
     volumes:
       - /tmp/sweb_data:/opt/strangerweb/data
     ports:
@@ -20,9 +20,9 @@ services:
 
   slightstalkie:
     #build:
-    #  dockerfile: dockerfile-slights.yml
+    #  dockerfile: dockerfile-slights-rpi.yml
     #  context: .
-    image: drfresh613/slightstalkie:0.0.1
+    image: drfresh613/slightstalkie:0.0.1-rpi
     environment:
       SWEB_HOST: strangerweb
     devices:

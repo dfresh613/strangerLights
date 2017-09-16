@@ -25,7 +25,8 @@ SECRET_KEY = ')k*4%iqas(_it%r*f*a^f+pxky2^b)-6)@1$+2d3lllwf_+4i9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# If ever in production, change this to the static ip address
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
