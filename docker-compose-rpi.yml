@@ -9,6 +9,7 @@ services:
       - /tmp/sweb_data:/opt/strangerweb/data
     ports:
       - "80:8000"
+    restart: always
     deploy:
        labels:
          com.example.description: "Strangerlights web application"
@@ -24,7 +25,7 @@ services:
     #  context: .
     image: drfresh613/slightstalkie:0.0.1-rpi
     environment:
-      SWEB_HOST: strangerweb
+      SWEB_HOST: strangerweb:8000
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
     deploy:
@@ -36,6 +37,7 @@ services:
        restart_policy:
           condition: on-failure
           delay: 5s
-          max_attempts: 3
+          max_attempts: 5
     depends_on:
       - strangerweb
+    restart: always
