@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services:
   strangerweb:
     #build:
@@ -6,7 +6,8 @@ services:
     #  context: .
     image: drfresh613/strangerweb:0.0.1-rpi
     volumes:
-      - /tmp/sweb_data:/opt/strangerweb/data
+      - /home/pi/sweb_data:/opt/strangerweb/data
+      #- /tmp/sweb_data:/opt/strangerweb/data
     ports:
       - "80:8000"
     restart: always
@@ -33,11 +34,26 @@ services:
          com.example.description: "Stringerlights message handler"
        placement:
         constraints:
-          - node.labels.type==arduino
+          - node.hostname==rpi3
        restart_policy:
           condition: on-failure
           delay: 5s
           max_attempts: 5
+
     depends_on:
       - strangerweb
     restart: always
+
+  visual:
+    image: alexellis2/visualizer-arm:latest
+    ports:
+      - "8080:8080"
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==rpi3
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
