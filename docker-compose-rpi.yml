@@ -33,7 +33,7 @@ services:
          com.example.description: "Stringerlights message handler"
        placement:
         constraints:
-          - node.labels.type = arduino
+          - node.labels.type==arduino
        restart_policy:
           condition: on-failure
           delay: 5s

@@ -1,5 +1,5 @@
 #http://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
-from resin/raspberrypi3-python:3.6-wheezy
+from resin/raspberry-pi-python:3.6
 ENV PYTHONUNBUFFERED 1
 COPY strangerWeb /opt/strangerweb
 WORKDIR /opt/strangerweb
