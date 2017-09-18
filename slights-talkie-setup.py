@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 from distutils.core import setup
 import setuptools
-setup(name='slightsTalkie',
+setup(name='slightstalkie',
       version='0.0.4',
       description="Contains libraries to communicate with both the web application api and the arduino serial listener. "
                   "This allows for sending and retrieving messages from both interfaces. Will.py uses these libraries to"
                   " inform the arduino serial interface what messages is next in the queue",
       author='Douglas Rohde',
       author_email='douglas.rohde2@gmail.com',
-      packages=['slightsTalkie'],
+      packages=['slightstalkie'],
       keywords='strangerlights',
       url='https://github.com/dfresh613/strangerLights',
       license="MIT",
