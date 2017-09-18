@@ -76,21 +76,32 @@ void loop(){
     FastLED.clear();
     FastLED.show();
     notifyPi();
-    delay(random(2500,8000)); //delay to wait for serial response, randomize the delay to make it creepier
-    String msg_str = "random";
+    delay(random(2500,5000)); //delay to wait for serial response, randomize the delay to make it creepier
+    String msgStr = "random";
     if(Serial.available()>0){
-        msg_str = Serial.readString();
-        if(msg_str.equals("random")){
-          doRandom();
-        }else{
-          displayMessage(msg_str);
-          doRandom();
-        }
+        msgStr = Serial.readString();
+        interpretMessage(msgStr, false); // Change false to true if you want to enable random effects when no messages are queued
     }else{
       doRandom();
     }
     running=false;
 
+}
+
+void interpretMessage(String msgStr, bool randomEnabled){
+  if (randomEnabled){
+      if(msgStr.equals("random")){
+        doRandom();
+      }else{
+        displayMessage(msgStr);
+        doRandom();
+      }
+  }else{
+    if( ! msgStr.equals("random") ){
+      displayMessage(msgStr);
+    }
+  }
+  
 }
 
 void notifyPi(){

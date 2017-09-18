@@ -1,0 +1,59 @@
+version: '3.2'
+services:
+  strangerweb:
+    #build:
+    #  dockerfile: dockerfile-sweb-rpi.yml
+    #  context: .
+    image: drfresh613/strangerweb:0.0.1-rpi
+    volumes:
+      - /home/pi/sweb_data:/opt/strangerweb/data
+      #- /tmp/sweb_data:/opt/strangerweb/data
+    ports:
+      - "80:8000"
+    restart: always
+    deploy:
+       labels:
+         com.example.description: "Strangerlights web application"
+       replicas: 3
+       restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+
+  slightstalkie:
+    #build:
+    #  dockerfile: dockerfile-slights-rpi.yml
+    #  context: .
+    image: drfresh613/slightstalkie:0.0.1-rpi
+    environment:
+      SWEB_HOST: strangerweb:8000
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    deploy:
+       labels:
+         com.example.description: "Stringerlights message handler"
+       placement:
+        constraints:
+          - node.hostname==rpi3
+       restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 5
+
+    depends_on:
+      - strangerweb
+    restart: always
+
+  visual:
+    image: alexellis2/visualizer-arm:latest
+    ports:
+      - "8080:8080"
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==rpi3
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock

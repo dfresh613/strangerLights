@@ -36,7 +36,11 @@ def queue(request):
         return redirect(reverse('messagereceiver:index'))
 
     else:
-        return HttpResponse("you're getting the whole queue")
+        response_data = {
+            "queue": Queue.objects.order_by('id')
+        }
+        return JsonResponse(response_data)
+
 
 
 def q_next(request):

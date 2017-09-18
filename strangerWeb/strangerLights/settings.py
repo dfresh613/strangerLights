@@ -25,7 +25,8 @@ SECRET_KEY = ')k*4%iqas(_it%r*f*a^f+pxky2^b)-6)@1$+2d3lllwf_+4i9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# If ever in production, change this to the static ip address
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'strangerLights.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'data', 'db.sqlite3'),
     }
 }
 
@@ -119,3 +120,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'STATIC_ROOT = os.path.join(BASE_DIR, "static/")'

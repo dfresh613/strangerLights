@@ -1,0 +1,3 @@
+#!/usr/bin/env python
+from slightstalkie import Will
+Will.perform_action()
