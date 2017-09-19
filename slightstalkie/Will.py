@@ -52,7 +52,8 @@ def perform_action():
     api_comm = ApiInterface(args.host)
     choosen_action = args.action[0]
     if choosen_action == ACTION_API_GET:
-        print(api_comm.get_queue())
+        api_comm.get_next_message()
+        #print("TODO - get the message")
     elif choosen_action == ACTION_API_POST:
         try:
             message = args.action[1]
