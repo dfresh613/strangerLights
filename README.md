@@ -22,5 +22,16 @@ Arduino sketch code which creates a char to int hashmap of letters to LED positi
 for messages and uses the hashmap to display them with the displayMessage() function. If no messages are present, it will simply
 do a random glowing routine
 
+### Deploying
+Both the web application and the message handler are available as docker containers: 
+https://hub.docker.com/r/drfresh613/strangerweb/
+https://hub.docker.com/r/drfresh613/slightstalkie/
+
+Full stack deployment is possible with docker-compose, using the compose files available in this repo. Simply find the compose file for your cpu (arm, or x86_64 supported, and copy it to your system
+
+Once the compose file has been copied to the system, connect your arduino to it with a serial cable, and use docker-compose to start the stack. 
+
+Note: You may need to modify the ARDUINO_SERIAL environment variable in the compose file, if the arduino isn't available on the default device
+
 Quick youtube POC:
 https://www.youtube.com/watch?v=IDPV9tJOkKA&feature=youtu.be
