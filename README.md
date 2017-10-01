@@ -25,6 +25,7 @@ do a random glowing routine
 ### Deploying
 Both the web application and the message handler are available as docker containers: 
 https://hub.docker.com/r/drfresh613/strangerweb/
+
 https://hub.docker.com/r/drfresh613/slightstalkie/
 
 Full stack deployment is possible with docker-compose, using the compose files available in this repo. Simply find the compose file for your cpu (arm, or x86_64 supported, and copy it to your system
