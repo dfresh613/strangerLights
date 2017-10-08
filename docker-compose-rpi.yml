@@ -2,7 +2,7 @@ version: '3.2'
 services:
   strangerweb:
     #build:
-    #  dockerfile: dockerfile-sweb-rpi.yml
+    #  dockerfile: dockerfile-sweb-rpi
     #  context: .
     image: drfresh613/strangerweb:0.0.1-rpi
     volumes:
@@ -22,7 +22,7 @@ services:
 
   slightstalkie:
     #build:
-    #  dockerfile: dockerfile-slights-rpi.yml
+    #  dockerfile: dockerfile-slights-rpi
     #  context: .
     image: drfresh613/slightstalkie:0.0.1-rpi
     environment:
