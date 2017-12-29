@@ -38,31 +38,31 @@ void setup(){
     * Array location for each letter. We can use this to dynamically create messages based on strings.
     */
     charToLed[0]('a',0);
-    charToLed[1]('b',4);
-    charToLed[3]('c',8);
-    charToLed[4]('d',12);
-    charToLed[5]('e',16);
-    charToLed[6]('f',20);
-    charToLed[7]('g',24);
-    charToLed[8]('h',27);
-    charToLed[9]('i',30);
-    charToLed[10]('j',33);
-    charToLed[11]('k',36);
-    charToLed[12]('l',39);
-    charToLed[13]('m',42);
-    charToLed[14]('n',48);
-    charToLed[15]('o',50);
-    charToLed[16]('p',54);
-    charToLed[17]('q',57);
-    charToLed[18]('r',61);
-    charToLed[19]('s',63);
-    charToLed[20]('t',68);
-    charToLed[21]('u',71);
-    charToLed[22]('v',74);
-    charToLed[23]('w',77);
-    charToLed[24]('x',80);
-    charToLed[25]('y',84);
-    charToLed[26]('z',87);
+    charToLed[1]('b',2);
+    charToLed[3]('c',4);
+    charToLed[4]('d',6);
+    charToLed[5]('e',8);
+    charToLed[6]('f',10);
+    charToLed[7]('g',12);
+    charToLed[8]('h',14);
+    charToLed[9]('i',29);
+    charToLed[10]('j',27);
+    charToLed[11]('k',25);
+    charToLed[12]('l',23);
+    charToLed[13]('m',21);
+    charToLed[14]('n',19);
+    charToLed[15]('o',17);
+    charToLed[16]('p',16);
+    charToLed[17]('q',32);
+    charToLed[18]('r',34);
+    charToLed[19]('s',36);
+    charToLed[20]('t',38);
+    charToLed[21]('u',40);
+    charToLed[22]('v',42);
+    charToLed[23]('w',44);
+    charToLed[24]('x',49);
+    charToLed[25]('y',48);
+    charToLed[26]('z',46);
     
     randomSeed(analogRead(0));
 }
@@ -121,7 +121,7 @@ void doRandom(){
       christmas();
       break;
     case 3: 
-      blinkSection(0, 99, random(1 ,5));
+      blinkSection(0, 49, random(1 ,5));
       break;
     case 4:
       endsToMiddle();
@@ -230,7 +230,7 @@ void displayMessage(String message){
 
     ledNum = charToLed.getValueOf(letter);
     leds[ledNum] = randomColor();
-    leds[ledNum+1] = randomColor();
+    //leds[ledNum+1] = randomColor();
     prev_led=ledNum;
     
     FastLED.show();
@@ -243,7 +243,7 @@ void displayMessage(String message){
     letter=message.charAt(i);
     ledNum=charToLed.getValueOf(letter);
     leds[ledNum] = randomColor();
-    leds[ledNum+1]= randomColor();
+    //leds[ledNum+1]= randomColor();
   }
   FastLED.show();
   delay(3000);
@@ -280,7 +280,7 @@ CRGB randomColor(){
 //Cool functions created by bxl4662
 void christmas() {
   FastLED.clear();
-  for (int i=0; i<100; i++){
+  for (int i=0; i<NUM_LEDS; i++){
     int modNum = i % 10;
     if (modNum== 0){
       leds[i] = aqua;
