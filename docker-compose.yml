@@ -24,6 +24,7 @@ services:
     #  dockerfile: dockerfile-slights.yml
     #  context: .
     image: drfresh613/slightstalkie:0.0.1
+    privileged: true
     environment:
       SWEB_HOST: strangerweb:8000
     devices:
