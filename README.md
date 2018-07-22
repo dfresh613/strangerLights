@@ -36,3 +36,9 @@ Note: You may need to modify the ARDUINO_SERIAL environment variable in the comp
 
 Quick youtube POC:
 https://www.youtube.com/watch?v=IDPV9tJOkKA&feature=youtu.be
+
+### Testing
+
+Unit tests are implemented for the slightstalkie library, and utilize tox to run against python2 and python35 environmentss.
+
+To run the unit tests execute the `tox` command from the repository root directory.

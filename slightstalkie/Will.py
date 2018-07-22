@@ -1,5 +1,5 @@
-from ArduinoInterface import ArduinoInterface
-from ApiInterface import ApiInterface
+from slightstalkie.api_interface import ApiInterface
+from slightstalkie.arduino_interface import ArduinoInterface
 import os
 import argparse
 import sys
@@ -19,25 +19,31 @@ def arg_parser(requires_action=False):
     Parses args required for communicating with api
     :return:
     """
-    action_options = [ACTION_API_GET, ACTION_API_POST, ACTION_ARDUINO_RECEIVE, ACTION_ARDUINO_SEND]
+    action_options = [ACTION_API_GET, ACTION_API_POST, ACTION_ARDUINO_RECEIVE,
+                      ACTION_ARDUINO_SEND]
 
     parser = argparse.ArgumentParser(
-        description="Provide parameters for interacting with the strangerlights api, or strangerarduino interface")
-    parser.add_argument('-i', '--host', type=str, required=False, help='Hostname:port of the strangerthings web api.'
-                                                                       ' Defaults to localhost',
+        description="Provide parameters for interacting with the "
+                    "strangerlights api, or strangerarduino interface")
+    parser.add_argument('-i', '--host', type=str, required=False,
+                        help='Hostname:port of the strangerthings web api.'
+                             ' Defaults to localhost',
                         default=os.getenv("SWEB_HOST", "localhost"))
-    parser.add_argument('-s', '--serial', type=str, required=False, default=os.getenv('SARDUINO_SERIAL', '/dev/ttyACM0'),
-                        help='Serial connection location for connected arduino. Defaults to /dev/ttyACM0')
+    parser.add_argument('-s', '--serial', type=str, required=False,
+                        default=os.getenv('SARDUINO_SERIAL', '/dev/ttyACM0'),
+                        help='Serial connection location for '
+                             'connected arduino. Defaults to /dev/ttyACM0')
     if requires_action:
-        parser.add_argument('action', nargs='+', type=str, help='The action to take. Possible actions are: {}'
+        parser.add_argument('action', nargs='+', type=str,
+                            help='The action to take. Possible actions are: {}'
                             .format(action_options))
 
     args = parser.parse_args()
 
-
     if requires_action:
         if args.action[0] not in action_options:
-            print "Error: chosen action: {} not an available action".format(args.action[0])
+            print("Error: chosen action: {} not an available action"
+                  .format(args.action[0]))
             sys.exit(5)
 
     return args
@@ -57,17 +63,18 @@ def perform_action():
     elif choosen_action == ACTION_API_POST:
         try:
             message = args.action[1]
-            print "posting {}".format(message)
+            print("posting {}".format(message))
             api_comm.post_message(message)
         except IndexError:
-            print "You must send also specify a message to post, and optionally the author. Whitespace separated"
+            print("You must send also specify a message to post, and"
+                  " optionally the author. Whitespace separated")
             sys.exit(5)
     elif choosen_action == ACTION_ARDUINO_SEND:
         try:
             arduino_comm = ArduinoInterface(args.serial)
             arduino_comm.push_message(args.action[1])
         except IndexError:
-            print "You must specify the message to be sent to the arduino"
+            print("You must specify the message to be sent to the arduino")
     elif choosen_action == ACTION_ARDUINO_RECEIVE:
         arduino_comm = ArduinoInterface(args.serial)
         arduino_comm.read_message()
@@ -75,7 +82,8 @@ def perform_action():
 
 def main():
     """
-    main message passing method which Listens for messages from the web interface, and sends to
+    main message passing method which Listens for messages from the
+     web interface, and sends to
     """
     q_pos = -1
     args = arg_parser()
@@ -84,7 +92,7 @@ def main():
     # Always loop listening for message from arduino
     while True:
         incoming_msg = arduino_comm.ser.readline()
-        print "Received arduino message {} ".format(incoming_msg);
+        print("Received arduino message {} ".format(incoming_msg))
         if q_pos != -1:
             api_comm.remove_message(q_pos)
 
@@ -94,6 +102,6 @@ def main():
             if c.isalpha() or c.isspace():
                 outgoing_message += c
         outgoing_message = outgoing_message.lower()
-        print "sending message {}".format(outgoing_message)
+        print("sending message {}".format(outgoing_message))
         if len(outgoing_message) > 0:
             arduino_comm.push_message(outgoing_message)
