@@ -1,6 +1,8 @@
 import serial
 import sys
 from serial.serialutil import SerialException
+
+
 class ArduinoInterface:
     """
     Class providing various communication methods for interacting with an arduino connected serially
